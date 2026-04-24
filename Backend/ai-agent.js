@@ -1,103 +1,121 @@
 const OpenAI = require("openai");
 require("dotenv").config();
+
 const openai = new OpenAI({
   baseURL: "https://openrouter.ai/api/v1",
   apiKey: process.env.OPENROUTER_API_KEY,
 });
 
-async function main() {
-  const completion = await openai.chat.completions.create({
-    model: "baidu/qianfan-ocr-fast:free",
-    //google/gemma-3-12b-it:free
-    messages: [{ role: "user", content: "what is agentic AI?" }],
-  });
+// Use whichever model is actually working in your OpenRouter setup
+const MODEL_NAME = "gpt-4o-mini";
 
-  console.log(completion.choices[0].message.content);
+function extractJson(text) {
+  const jsonMatch = text.match(/\{[\s\S]*\}/);
+
+  if (!jsonMatch) {
+    throw new Error("Model did not return valid JSON");
+  }
+
+  return JSON.parse(jsonMatch[0]);
 }
-//main();
 
 const analyzeGoal = async (goalText, durationDays) => {
-  // const goalText = "Learn Python";
-  // const durationDays = "7";
+  const prompt = `A user wants to "${goalText}" within ${durationDays} days.
 
-  const prompt = `User wants to ${goalText} within ${durationDays} days. 
-    create a structured learning/execution plan with:
-    1. main milestones for each week.
-    2. success matrices
-    3. potential challenges
-    4. motivational approch
+Create a structured learning or execution plan.
 
-    Return as JSON with this structure:
+Return ONLY valid JSON in this exact structure:
+{
+  "milestones": ["milestone 1", "milestone 2", "milestone 3"],
+  "dailyTasks": [
     {
-      "milestones": ["milestone1", "milestone2", "milestone3"],
-      "dailyTasks": [{"day": 1, "title": "....", "description": "..."}],
-      "successMetrics": ["metric 1", "metric 2", "metric 3"],
-      "challenges": ["challenge 1"],
-      "motivationalApproach": "...."
-    } 
-  `;
+      "day": 1,
+      "title": "Task title",
+      "description": "Task description"
+    }
+  ],
+  "successMetrics": ["metric 1", "metric 2", "metric 3"],
+  "challenges": ["challenge 1", "challenge 2"],
+  "motivationalApproach": "short motivational advice"
+}
+
+Rules:
+- Return only JSON
+- Do not use markdown
+- Do not add extra explanation
+- Make the daily tasks practical and beginner-friendly
+- Try to align the number of dailyTasks with the given timeline`;
+
   try {
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      // "google/gemma-3-12b-it:free",
-      // "baidu/qianfan-ocr-fast:free",
+      model: MODEL_NAME,
       messages: [
         {
           role: "system",
           content:
-            "You are an web dev specialist and teach development to students specially in python",
+            "You are an expert learning planner and productivity coach. Always return only valid JSON.",
         },
-        { role: "user", content: prompt },
+        {
+          role: "user",
+          content: prompt,
+        },
       ],
       temperature: 0.7,
     });
 
     const content = completion.choices[0].message.content;
-    const jsonMatch = content.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      throw new Error("Model did not return valid JSON");
-    }
-    return JSON.parse(jsonMatch[0]);
+    return extractJson(content);
   } catch (err) {
-    return res.status(500).json({ error: "Something went wrong" });
+    console.error("analyzeGoal error:", err.message);
     throw err;
   }
 };
+
 const evaluateProgress = async (goal, completedTasks, totalTasks, days) => {
-  const completionRate = ((completedTasks / totalTasks) * 100).toFixed(2); // 72
-  const expectedRate = ((days / goal.durationDays) * 100).toFixed(2); // 90
+  const safeTotalTasks = Number(totalTasks) || 0;
+  const safeDurationDays = Number(goal.durationDays) || 1;
+  const safeCompletedTasks = Number(completedTasks) || 0;
+  const safeDays = Number(days) || 1;
+
+  const completionRate =
+    safeTotalTasks === 0
+      ? 0
+      : Number(((safeCompletedTasks / safeTotalTasks) * 100).toFixed(2));
+
+  const expectedRate = Number(((safeDays / safeDurationDays) * 100).toFixed(2));
   const onTrack = completionRate >= expectedRate - 10;
 
   const prompt = `Learning Goal: "${goal.title}"
-  Duration: "${goal.durationDays}"
-  Days Elapsed: ${days} days
-  Task Completion Rate: ${completionRate}  
-  Expected Task completion rate: ${expectedRate}
-  status: ${onTrack ? "ON TRACK" : "BEHIND"}
+Duration: ${goal.durationDays} days
+Days Elapsed: ${safeDays}
+Completed Tasks: ${safeCompletedTasks}
+Total Tasks: ${safeTotalTasks}
+Task Completion Rate: ${completionRate}%
+Expected Completion Rate: ${expectedRate}%
+Status: ${onTrack ? "ON TRACK" : "BEHIND"}
 
-  Generate: 
-  1. Performance analysis
-  2. Specific encouragement 
-  3. Recommend next action (just 1-3 lines)
-  4. Weekly tips
+Return ONLY valid JSON in this exact structure:
+{
+  "analysis": "short honest performance analysis",
+  "encouragement": "short supportive message",
+  "nextAction": "1 to 3 lines of next action",
+  "tip": "one practical weekly tip"
+}
 
-  Return as JSON: 
-  {
-    "analysis": ".....",
-    "encourgement": ".....",
-    "nextAction": ".....",
-    "tip": "....."
-  }
-  `;
+Rules:
+- Return only JSON
+- Do not use markdown
+- Do not add extra explanation
+- Be supportive but realistic`;
 
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: MODEL_NAME,
       messages: [
         {
           role: "system",
           content:
-            "You are a supportive and smart productivity coach. Be encouraging but honest. Adapt your tone based on progress.",
+            "You are a supportive and smart productivity coach. Always return only valid JSON.",
         },
         {
           role: "user",
@@ -108,13 +126,10 @@ const evaluateProgress = async (goal, completedTasks, totalTasks, days) => {
     });
 
     const content = response.choices[0].message.content;
-    const jsonMatch = content.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      throw new Error("Model did not return valid JSON");
-    }
-    return JSON.parse(jsonMatch[0]);
+    return extractJson(content);
   } catch (err) {
-    return res.status(500).json({ error: "Something went wrong" });
+    console.error("evaluateProgress error:", err.message);
+    throw err;
   }
 };
 
@@ -122,4 +137,3 @@ module.exports = {
   analyzeGoal,
   evaluateProgress,
 };
-// analyzeGoal();

@@ -115,5 +115,75 @@
     "description": "Assess progress. Identify areas for further learning. Set goals for future Python projects.",
     "completed": false,
     "createdAt": "2026-04-24T11:46:55.632Z"
+  },
+  {
+    "id": "d9f88e0d-a149-4135-893d-ea9288acbb96",
+    "goalId": "12e448e2-fffc-440b-be57-f0fed010851f",
+    "day": 1,
+    "title": "Introduction to Python",
+    "description": "Learn about Python's history, features, and installation process.",
+    "completed": false,
+    "createdAt": "2026-04-24T12:04:05.920Z",
+    "updatedAt": "2026-04-24T12:04:05.920Z"
+  },
+  {
+    "id": "eba33234-5baf-416a-9805-e7d4cd8f1688",
+    "goalId": "12e448e2-fffc-440b-be57-f0fed010851f",
+    "day": 2,
+    "title": "Basic Syntax and Variables",
+    "description": "Understand Python syntax, variables, and data types.",
+    "completed": false,
+    "createdAt": "2026-04-24T12:04:05.920Z",
+    "updatedAt": "2026-04-24T12:04:05.920Z"
+  },
+  {
+    "id": "d3de15fb-fab0-4c52-9f9c-3354f86687ab",
+    "goalId": "12e448e2-fffc-440b-be57-f0fed010851f",
+    "day": 3,
+    "title": "Control Structures",
+    "description": "Learn about conditionals (if statements) and loops (for and while).",
+    "completed": false,
+    "createdAt": "2026-04-24T12:04:05.920Z",
+    "updatedAt": "2026-04-24T12:04:05.920Z"
+  },
+  {
+    "id": "69969a52-5178-496a-82e1-b64590eb8e96",
+    "goalId": "12e448e2-fffc-440b-be57-f0fed010851f",
+    "day": 4,
+    "title": "Functions",
+    "description": "Understand how to write and call functions in Python.",
+    "completed": false,
+    "createdAt": "2026-04-24T12:04:05.920Z",
+    "updatedAt": "2026-04-24T12:04:05.920Z"
+  },
+  {
+    "id": "354d28fa-2e5c-4147-ad68-beee226698c0",
+    "goalId": "12e448e2-fffc-440b-be57-f0fed010851f",
+    "day": 5,
+    "title": "Data Structures",
+    "description": "Learn about lists, tuples, sets, and dictionaries.",
+    "completed": false,
+    "createdAt": "2026-04-24T12:04:05.920Z",
+    "updatedAt": "2026-04-24T12:04:05.920Z"
+  },
+  {
+    "id": "902105ee-8fa2-4a2a-88be-28dcf240a094",
+    "goalId": "12e448e2-fffc-440b-be57-f0fed010851f",
+    "day": 6,
+    "title": "File Handling",
+    "description": "Learn how to read from and write to files in Python.",
+    "completed": false,
+    "createdAt": "2026-04-24T12:04:05.920Z",
+    "updatedAt": "2026-04-24T12:04:05.920Z"
+  },
+  {
+    "id": "0371fea9-dcf7-480b-9ac1-e5c5bd1c4f31",
+    "goalId": "12e448e2-fffc-440b-be57-f0fed010851f",
+    "day": 7,
+    "title": "Build a Simple Project",
+    "description": "Combine everything learned to build a simple project like a calculator or a to-do list.",
+    "completed": false,
+    "createdAt": "2026-04-24T12:04:05.920Z",
+    "updatedAt": "2026-04-24T12:04:05.920Z"
   }
 ]

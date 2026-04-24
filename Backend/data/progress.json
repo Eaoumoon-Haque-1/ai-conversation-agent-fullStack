@@ -6,5 +6,13 @@
     "progressParcentage": 0,
     "id": "1777031215630-1777031215632",
     "timestamp": "2026-04-24T11:46:55.632Z"
+  },
+  {
+    "id": "9c112b2c-6bde-473b-9856-e660012addcd",
+    "goalId": "12e448e2-fffc-440b-be57-f0fed010851f",
+    "completedTasks": 0,
+    "totalTasks": 7,
+    "progressPercentage": 0,
+    "timestamp": "2026-04-24T12:04:05.922Z"
   }
 ]

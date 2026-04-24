@@ -1,131 +1,235 @@
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
+const crypto = require("crypto");
 
-const DATA_DIR = path.join(__dirname, 'data');
+const DATA_DIR = path.join(__dirname, "data");
 
-// Ensure data directory exists
 if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
+  fs.mkdirSync(DATA_DIR, { recursive: true });
 }
 
 const FILES = {
-    goals: path.join(DATA_DIR, 'goals.json'),
-    tasks: path.join(DATA_DIR, 'tasks.json'),
-    progress: path.join(DATA_DIR, 'progress.json'),
+  goals: path.join(DATA_DIR, "goals.json"),
+  tasks: path.join(DATA_DIR, "tasks.json"),
+  progress: path.join(DATA_DIR, "progress.json"),
 };
 
-// Initialize files if they don't exist
-Object.values(FILES).forEach(file => {
-    if (!fs.existsSync(file)) {
-        fs.writeFileSync(file, JSON.stringify([], null, 2));
-    }
+Object.values(FILES).forEach((file) => {
+  if (!fs.existsSync(file)) {
+    fs.writeFileSync(file, JSON.stringify([], null, 2));
+  }
 });
 
+const readJson = (file) => {
+  try {
+    return JSON.parse(fs.readFileSync(file, "utf8"));
+  } catch {
+    return [];
+  }
+};
+
+const writeJson = (file, data) => {
+  fs.writeFileSync(file, JSON.stringify(data, null, 2));
+};
+
+const generateId = () => {
+  if (crypto.randomUUID) return crypto.randomUUID();
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+};
+
 const storage = {
-    // Goals operations
-    saveGoal: (goal) => {
-        const goals = storage.getAllGoals();
-        goal.id = goal.id || Date.now().toString();
-        goal.createdAt = goal.createdAt || new Date().toISOString();
-        goal.status = goal.status || 'active';
-        const index = goals.findIndex(g => g.id === goal.id);
-        if (index >= 0) {
-            goals[index] = goal;
-        } else {
-            goals.push(goal);
-        }
-        fs.writeFileSync(FILES.goals, JSON.stringify(goals, null, 2));
-        return goal;
-    },
+  // ===== Goals =====
+  getAllGoals: () => {
+    return readJson(FILES.goals);
+  },
 
-    getAllGoals: () => {
-        try {
-            return JSON.parse(fs.readFileSync(FILES.goals, 'utf8'));
-        } catch {
-            return [];
-        }
-    },
+  getGoal: (goalId) => {
+    const goals = storage.getAllGoals();
+    return goals.find((g) => g.id === goalId) || null;
+  },
 
-    getGoal: (goalId) => {
-        const goals = storage.getAllGoals();
-        return goals.find(g => g.id === goalId);
-    },
+  saveGoal: (goal) => {
+    const goals = storage.getAllGoals();
 
-    deleteGoal: (goalId) => {
-        let goals = storage.getAllGoals();
-        goals = goals.filter(g => g.id !== goalId);
-        fs.writeFileSync(FILES.goals, JSON.stringify(goals, null, 2));
-    },
+    const newGoal = {
+      id: goal.id || generateId(),
+      title: goal.title,
+      durationDays: Number(goal.durationDays),
+      plan: goal.plan || null,
+      status: goal.status || "active",
+      createdAt: goal.createdAt || new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
 
-    // Tasks operations
-    saveTasks: (goalId, tasks) => {
-        const allTasks = storage.getAllTasks();
-        const filtered = allTasks.filter(t => t.goalId !== goalId);
-        const withIds = tasks.map((task, idx) => ({
-            id: task.id || `${goalId}-${idx}-${Date.now()}`,
-            goalId,
-            day: task.day,
-            title: task.title,
-            description: task.description,
-            completed: task.completed || false,
-            createdAt: task.createdAt || new Date().toISOString(),
-        }));
-        fs.writeFileSync(FILES.tasks, JSON.stringify([...filtered, ...withIds], null, 2));
-        return withIds;
-    },
+    const index = goals.findIndex((g) => g.id === newGoal.id);
 
-    getAllTasks: () => {
-        try {
-            return JSON.parse(fs.readFileSync(FILES.tasks, 'utf8'));
-        } catch {
-            return [];
-        }
-    },
+    if (index >= 0) {
+      goals[index] = { ...goals[index], ...newGoal };
+    } else {
+      goals.push(newGoal);
+    }
 
-    getTasksByGoal: (goalId) => {
-        const tasks = storage.getAllTasks();
-        return tasks.filter(t => t.goalId === goalId);
-    },
+    writeJson(FILES.goals, goals);
+    return newGoal;
+  },
 
-    updateTask: (taskId, updates) => {
-        const tasks = storage.getAllTasks();
-        const index = tasks.findIndex(t => t.id === taskId);
-        if (index >= 0) {
-            tasks[index] = { ...tasks[index], ...updates, updatedAt: new Date().toISOString() };
-            fs.writeFileSync(FILES.tasks, JSON.stringify(tasks, null, 2));
-            return tasks[index];
-        }
-        return null;
-    },
+  updateGoal: (goalId, updates) => {
+    const goals = storage.getAllGoals();
+    const index = goals.findIndex((g) => g.id === goalId);
 
-    // Progress operations
-    saveProgress: (goalId, progress) => {
-        const allProgress = storage.getAllProgress();
-        progress.id = progress.id || `${goalId}-${Date.now()}`;
-        progress.goalId = goalId;
-        progress.timestamp = progress.timestamp || new Date().toISOString();
-        const index = allProgress.findIndex(p => p.id === progress.id);
-        if (index >= 0) {
-            allProgress[index] = progress;
-        } else {
-            allProgress.push(progress);
-        }
-        fs.writeFileSync(FILES.progress, JSON.stringify(allProgress, null, 2));
-        return progress;
-    },
+    if (index === -1) return null;
 
-    getAllProgress: () => {
-        try {
-            return JSON.parse(fs.readFileSync(FILES.progress, 'utf8'));
-        } catch {
-            return [];
-        }
-    },
+    goals[index] = {
+      ...goals[index],
+      ...updates,
+      updatedAt: new Date().toISOString(),
+    };
 
-    getProgressByGoal: (goalId) => {
-        const progress = storage.getAllProgress();
-        return progress.filter(p => p.goalId === goalId);
-    },
+    writeJson(FILES.goals, goals);
+    return goals[index];
+  },
+
+  deleteGoal: (goalId) => {
+    // delete goal
+    const goals = storage.getAllGoals().filter((g) => g.id !== goalId);
+    writeJson(FILES.goals, goals);
+
+    // delete related tasks
+    const tasks = storage.getAllTasks().filter((t) => t.goalId !== goalId);
+    writeJson(FILES.tasks, tasks);
+
+    // delete related progress
+    const progress = storage
+      .getAllProgress()
+      .filter((p) => p.goalId !== goalId);
+    writeJson(FILES.progress, progress);
+
+    return true;
+  },
+
+  // ===== Tasks =====
+  getAllTasks: () => {
+    return readJson(FILES.tasks);
+  },
+
+  getTaskById: (taskId) => {
+    const tasks = storage.getAllTasks();
+    return tasks.find((t) => t.id === taskId) || null;
+  },
+
+  getTasksByGoal: (goalId) => {
+    const tasks = storage.getAllTasks();
+    return tasks
+      .filter((t) => t.goalId === goalId)
+      .sort((a, b) => Number(a.day) - Number(b.day));
+  },
+
+  saveTasks: (goalId, tasks = []) => {
+    const allTasks = storage.getAllTasks();
+    const remainingTasks = allTasks.filter((t) => t.goalId !== goalId);
+
+    const now = new Date().toISOString();
+
+    const normalizedTasks = tasks.map((task, idx) => ({
+      id: task.id || generateId(),
+      goalId,
+      day: Number(task.day ?? idx + 1),
+      title: task.title || `Task ${idx + 1}`,
+      description: task.description || "",
+      completed: Boolean(task.completed),
+      createdAt: task.createdAt || now,
+      updatedAt: now,
+    }));
+
+    writeJson(FILES.tasks, [...remainingTasks, ...normalizedTasks]);
+    return normalizedTasks;
+  },
+
+  updateTask: (taskId, updates) => {
+    const tasks = storage.getAllTasks();
+    const index = tasks.findIndex((t) => t.id === taskId);
+
+    if (index === -1) return null;
+
+    tasks[index] = {
+      ...tasks[index],
+      ...updates,
+      updatedAt: new Date().toISOString(),
+    };
+
+    writeJson(FILES.tasks, tasks);
+
+    // auto-sync progress for the goal after task update
+    storage.syncProgressForGoal(tasks[index].goalId);
+
+    return tasks[index];
+  },
+
+  // ===== Progress =====
+  getAllProgress: () => {
+    return readJson(FILES.progress);
+  },
+
+  getProgressByGoal: (goalId) => {
+    const progress = storage.getAllProgress();
+    return progress.filter((p) => p.goalId === goalId);
+  },
+
+  getLatestProgressByGoal: (goalId) => {
+    const records = storage.getProgressByGoal(goalId);
+    if (!records.length) return null;
+
+    return records.sort(
+      (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+    )[0];
+  },
+
+  saveProgress: (goalId, progress) => {
+    const allProgress = storage.getAllProgress();
+
+    const newProgress = {
+      id: progress.id || generateId(),
+      goalId,
+      completedTasks: Number(progress.completedTasks || 0),
+      totalTasks: Number(progress.totalTasks || 0),
+      progressPercentage: Number(progress.progressPercentage || 0),
+      timestamp: progress.timestamp || new Date().toISOString(),
+    };
+
+    allProgress.push(newProgress);
+    writeJson(FILES.progress, allProgress);
+    return newProgress;
+  },
+
+  syncProgressForGoal: (goalId) => {
+    const tasks = storage.getTasksByGoal(goalId);
+
+    const totalTasks = tasks.length;
+    const completedTasks = tasks.filter((t) => t.completed).length;
+    const progressPercentage =
+      totalTasks === 0 ? 0 : Number(((completedTasks / totalTasks) * 100).toFixed(2));
+
+    return storage.saveProgress(goalId, {
+      completedTasks,
+      totalTasks,
+      progressPercentage,
+    });
+  },
+
+  // ===== Combined Helpers =====
+  getGoalDetails: (goalId) => {
+    const goal = storage.getGoal(goalId);
+    if (!goal) return null;
+
+    const tasks = storage.getTasksByGoal(goalId);
+    const latestProgress = storage.getLatestProgressByGoal(goalId);
+
+    return {
+      ...goal,
+      tasks,
+      latestProgress,
+    };
+  },
 };
 
 module.exports = storage;

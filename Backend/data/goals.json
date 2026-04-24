@@ -94,5 +94,67 @@
     "status": "active",
     "id": "1777031215630",
     "createdAt": "2026-04-24T11:46:55.630Z"
+  },
+  {
+    "id": "12e448e2-fffc-440b-be57-f0fed010851f",
+    "title": "Leaarn Python",
+    "durationDays": 7,
+    "plan": {
+      "milestones": [
+        "Understand Python basics",
+        "Write simple programs",
+        "Build a small project"
+      ],
+      "dailyTasks": [
+        {
+          "day": 1,
+          "title": "Introduction to Python",
+          "description": "Learn about Python's history, features, and installation process."
+        },
+        {
+          "day": 2,
+          "title": "Basic Syntax and Variables",
+          "description": "Understand Python syntax, variables, and data types."
+        },
+        {
+          "day": 3,
+          "title": "Control Structures",
+          "description": "Learn about conditionals (if statements) and loops (for and while)."
+        },
+        {
+          "day": 4,
+          "title": "Functions",
+          "description": "Understand how to write and call functions in Python."
+        },
+        {
+          "day": 5,
+          "title": "Data Structures",
+          "description": "Learn about lists, tuples, sets, and dictionaries."
+        },
+        {
+          "day": 6,
+          "title": "File Handling",
+          "description": "Learn how to read from and write to files in Python."
+        },
+        {
+          "day": 7,
+          "title": "Build a Simple Project",
+          "description": "Combine everything learned to build a simple project like a calculator or a to-do list."
+        }
+      ],
+      "successMetrics": [
+        "Complete all daily tasks",
+        "Build a simple project",
+        "Debug and run code successfully"
+      ],
+      "challenges": [
+        "Maintaining focus on daily tasks",
+        "Understanding complex concepts"
+      ],
+      "motivationalApproach": "Every small step you take brings you closer to mastering Python!"
+    },
+    "status": "active",
+    "createdAt": "2026-04-24T12:04:05.919Z",
+    "updatedAt": "2026-04-24T12:04:05.919Z"
   }
 ]
