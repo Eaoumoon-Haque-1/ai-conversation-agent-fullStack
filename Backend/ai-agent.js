@@ -25,7 +25,10 @@ const analyzeGoal = async () => {
     const completion = await openai.chat.completions.create({
       model: "baidu/qianfan-ocr-fast:free",
       //google/gemma-3-12b-it:free
-      messages: [{ role: "user", content: propmt }],
+      messages: [
+        { role : "system", content : "You are an web dev specialist and teach development to students specially in python" },
+        { role: "user", content: propmt }],
+        temperature : 0.7,
     });
 
     console.log(completion.choices[0].message.content);
