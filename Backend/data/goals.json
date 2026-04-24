@@ -1,0 +1,98 @@
+[
+  {
+    "title": "Leaarn Python",
+    "durationDays": "7",
+    "plan": {
+      "milestones": [
+        "Python Basics & Syntax Mastery",
+        "Data Structures & Functions",
+        "Projects & Problem-Solving"
+      ],
+      "dailyTasks": [
+        {
+          "day": 1,
+          "title": "Python Basics & Syntax",
+          "description": "Learn variables, data types, operators, and basic syntax. Complete 2-3 exercises from Codecademy or a similar platform."
+        },
+        {
+          "day": 2,
+          "title": "Control Flow",
+          "description": "Master if statements, loops (for/while), and break/continue. Build a simple program using control flow."
+        },
+        {
+          "day": 3,
+          "title": "Functions & Modules",
+          "description": "Create custom functions, understand parameters, and explore built-in modules (e.g., math, random). Write 3 function-based projects."
+        },
+        {
+          "day": 4,
+          "title": "Data Structures",
+          "description": "Learn lists, tuples, dictionaries, and sets. Practice common operations (append, index, iterate)."
+        },
+        {
+          "day": 5,
+          "title": "Error Handling & File I/O",
+          "description": "Study try/except, file handling (open/read/write). Build a program that reads a file and handles errors."
+        },
+        {
+          "day": 6,
+          "title": "Object-Oriented Programming",
+          "description": "Introduce classes, objects, and inheritance. Create a simple class-based project."
+        },
+        {
+          "day": 7,
+          "title": "Projects & Problem-Solving",
+          "description": "Build a small project (e.g., to-do list, calculator) to consolidate all concepts. Solve 2-3 LeetCode/Codewars problems."
+        },
+        {
+          "day": 8,
+          "title": "Advanced Topics (Optional)",
+          "description": "Explore lambda functions, list comprehensions, or basic APIs. Update project with advanced features."
+        },
+        {
+          "day": 9,
+          "title": "Projects & Problem-Solving",
+          "description": "Build a more complex project (e.g., weather app, quiz game). Solve 3-5 LeetCode problems."
+        },
+        {
+          "day": 10,
+          "title": "Projects & Problem-Solving",
+          "description": "Build a capstone project (e.g., data analysis, automation script). Solve 5-8 LeetCode problems."
+        },
+        {
+          "day": 11,
+          "title": "Review & Reinforcement",
+          "description": "Review all concepts. Debug common errors. Practice coding for 2 hours."
+        },
+        {
+          "day": 12,
+          "title": "Final Project & Code Review",
+          "description": "Complete a final project integrating all concepts. Have a peer review your code for feedback."
+        },
+        {
+          "day": 13,
+          "title": "Reflection & Next Steps",
+          "description": "Assess progress. Identify areas for further learning. Set goals for future Python projects."
+        }
+      ],
+      "successMetrics": [
+        "Build 3-5 small projects",
+        "Solve 10+ LeetCode/Codewars problems",
+        "Debug and fix 5+ common Python errors",
+        "Create 5+ custom functions",
+        "Complete all daily tasks without major setbacks"
+      ],
+      "challenges": [
+        "Staying consistent with daily practice",
+        "Understanding abstract concepts like OOP",
+        "Debugging complex errors",
+        "Balancing theory with hands-on projects",
+        "Keeping motivation high after difficult days"
+      ],
+      "motivationalApproach": "Celebrate small wins daily (e.g., finishing a function, solving a problem). Use a progress tracker to visualize growth. Join Python communities (e.g., Reddit, Discord) for support. Reward yourself after milestones (e.g., a treat after 5 days of practice). Focus on progress, not perfection—every error is a learning opportunity. Remind yourself of the real-world applications (web dev, data analysis, automation) to stay inspired."
+    },
+    "status": "active",
+    "id": "1777031215630",
+    "createdAt": "2026-04-24T11:46:55.630Z"
+  }
+]
